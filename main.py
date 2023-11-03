@@ -16,6 +16,7 @@ log = logging.getLogger('linky')
 log.debug('Loading config...')
 config = linky.load_config()
 log.debug(f'Config loaded! Values: {config}')
+period = int(config.get('period', 60))
 
 terminal = linky.setup_serial(config['device'])
 
@@ -89,5 +90,5 @@ while True:
     log.debug("Inserting stream record")
     linky.insert_stream(config, db, cr, data_BASE, data_PAPP, data_IINST)
 
-    log.debug("Cycle ends, sleeping for 60 seconds")
-    time.sleep(60)
+    log.debug(f"Cycle ends, sleeping for {period} seconds")
+    time.sleep(period)
