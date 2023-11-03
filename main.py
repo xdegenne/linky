@@ -52,14 +52,17 @@ while True:
     # reading continously output until we have data that interests us
     while True:
         line = terminal.readline().decode('ascii')
-        log.debug(f"Current line: {line}")
+        log.debug(f"Current line: <{line}>")
 
         if line.startswith('BASE'):
             data_BASE = int(line.split(' ')[1])
+            log.debug(f"Parsed BASE: {data_BASE}")
         if line.startswith('PAPP'):
             data_PAPP = int(line.split(' ')[1])
+            log.debug(f"Parsed PAPP: {data_PAPP}")
         if line.startswith('IINST'):
             data_IINST = int(line.split(' ')[1])
+            log.debug(f"Parsed IINST: {data_IINST}")
 
         # We have BASE and PAPP, we can now close the connection
         if data_BASE and data_PAPP and data_IINST:
