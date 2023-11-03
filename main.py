@@ -57,10 +57,12 @@ while True:
             data_BASE = int(line.split(' ')[1])
         if line.startswith('PAPP'):
             data_PAPP = int(line.split(' ')[1])
+        if line.startswith('IINST'):
+            data_IINST = int(line.split(' ')[1])
 
         # We have BASE and PAPP, we can now close the connection
-        if data_BASE and data_PAPP:
-            log.debug(f"Output parsed: BASE={data_BASE}, PAPP={data_PAPP}. Closing terminal.")
+        if data_BASE and data_PAPP and data_IINST:
+            log.debug(f"Output parsed: BASE={data_BASE}, PAPP={data_PAPP}. IINST={data_IINST}. Closing terminal.")
             terminal.close()
             break
     
@@ -80,7 +82,7 @@ while True:
 
     # inserting values
     log.debug("Inserting stream record")
-    linky.insert_stream(config, db, cr, data_BASE, data_PAPP)
+    linky.insert_stream(config, db, cr, data_BASE, data_PAPP, data_IINST)
 
     log.debug("Cycle ends, sleeping for 60 seconds")
     time.sleep(60)

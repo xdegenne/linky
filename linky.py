@@ -71,7 +71,7 @@ def test_db_connection(server, user, password, name):
         log.info("Database schema is not there, creating it...")
         try:
             cr.execute("CREATE TABLE `dailies` (`id` int(10) UNSIGNED NOT NULL,`clock` date NOT NULL,`BASE_diff` int(11) NOT NULL) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;")
-            cr.execute("CREATE TABLE `stream` (`id` int(20) UNSIGNED NOT NULL,`clock` datetime NOT NULL,`BASE` int(11) NOT NULL,`PAPP` int(11) NOT NULL,`BASE_diff` int(11) NOT NULL) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;")
+            cr.execute("CREATE TABLE `stream` (`id` int(20) UNSIGNED NOT NULL,`clock` datetime NOT NULL,`BASE` int(11) NOT NULL,`PAPP` int(11) NOT NULL,`BASE_diff` int(11) NOT NULL,`IINST` int(11) NOT NULL) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;")
             cr.execute("ALTER TABLE `dailies` ADD PRIMARY KEY (`id`), ADD KEY `clock` (`clock`);")
             cr.execute("ALTER TABLE `stream` ADD PRIMARY KEY (`id`), ADD KEY `clock` (`clock`);")
             cr.execute("ALTER TABLE `dailies` MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;")
@@ -115,7 +115,7 @@ def close_db(db):
     db.close()
 
 
-def insert_stream(config, db, cr, BASE, PAPP):
+def insert_stream(config, db, cr, BASE, PAPP, IINST):
     """
     Insert a record in the stream table
 
@@ -125,6 +125,7 @@ def insert_stream(config, db, cr, BASE, PAPP):
         cr (type): MySQLdb cursor object
         BASE (int): Linky BASE value (Wh meter)
         PAPP (int): Linky PAPP value (current VA power)
+        IINST (int): Linky IINST value (current A intensity)
     """
     # generating time
     if config.get('use_utc', False):
@@ -143,7 +144,7 @@ def insert_stream(config, db, cr, BASE, PAPP):
         BASE_diff = BASE-int(previous)
 
     # inserting records
-    cr.execute(f'INSERT INTO stream VALUES (NULL, %(now)s, %(BASE)s, %(PAPP)s, %(BASE_diff)s);', {"now": now, "BASE": BASE, "PAPP": PAPP, "BASE_diff": BASE_diff})
+    cr.execute(f'INSERT INTO stream VALUES (NULL, %(now)s, %(BASE)s, %(PAPP)s, %(BASE_diff)s, %(IINST)s);', {"now": now, "BASE": BASE, "PAPP": PAPP, "BASE_diff": BASE_diff, "IINST": IINST})
     db.commit()
 
 
