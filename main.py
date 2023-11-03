@@ -38,6 +38,7 @@ while True:
     log.debug("Cycle begins")
     data_BASE = None
     data_PAPP = None
+    data_IINST = None
 
     if config.get('use_utc', False):
         current_loop_day = datetime.datetime.now(datetime.timezone.utc).day
