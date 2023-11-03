@@ -64,6 +64,7 @@ while True:
             data_IINST = int(line.split(' ')[1])
             log.debug(f"Parsed IINST: {data_IINST}")
 
+        log.debug(f"BASE={data_BASE}, PAPP={data_PAPP}. IINST={data_IINST} => {data_BASE and data_PAPP and data_IINST}")
         # We have BASE and PAPP, we can now close the connection
         if data_BASE and data_PAPP and data_IINST:
             log.debug(f"Output parsed: BASE={data_BASE}, PAPP={data_PAPP}. IINST={data_IINST}. Closing terminal.")
