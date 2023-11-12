@@ -2,6 +2,7 @@
 
 # stdlib
 import datetime, time, logging
+from influxdb import InfluxDBClient
 
 # Self libraries
 import linky
