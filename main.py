@@ -21,8 +21,10 @@ period = int(config.get('period', 60))
 terminal = linky.setup_serial(config['device'])
 
 # Trying to connect to db server and creating schema if not exists
-linky.test_db_connection(config['database']['server'], config['database']['user'], config['database']['password'], config['database']['name'])
+#linky.test_db_connection(config['database']['server'], config['database']['user'], config['database']['password'], config['database']['name'])
 
+client = InfluxDBClient(host=config['influx_db']['server'], port=config['influx_db']['port'])
+client.switch_database(config['influx_db']['name'])
 
 # ----------------------------- #
 # Main loop                     #
@@ -73,22 +75,22 @@ while True:
             break
     
     # Connecting to database
-    log.debug("Connecting to database")
-    db, cr = linky.open_db(config['database']['server'], config['database']['user'], config['database']['password'], config['database']['name'])
+    # log.debug("Connecting to database")
+    # db, cr = linky.open_db(config['database']['server'], config['database']['user'], config['database']['password'], config['database']['name'])
 
-    # first record of the day? generating dailies
-    if current_loop_day != previous_loop_day:
-        log.debug(f"First record of the day! Inserting dailies record.")
-        linky.insert_dailies(config, db, cr, data_BASE)
+    # # first record of the day? generating dailies
+    # if current_loop_day != previous_loop_day:
+    #     log.debug(f"First record of the day! Inserting dailies record.")
+    #     linky.insert_dailies(config, db, cr, data_BASE)
 
-    if config.get('use_utc', False):
-        previous_loop_day = datetime.datetime.now(datetime.timezone.utc).day
-    else:
-        previous_loop_day = datetime.datetime.now().day
+    # if config.get('use_utc', False):
+    #     previous_loop_day = datetime.datetime.now(datetime.timezone.utc).day
+    # else:
+    #     previous_loop_day = datetime.datetime.now().day
 
-    # inserting values
-    log.debug("Inserting stream record")
-    linky.insert_stream(config, db, cr, data_BASE, data_PAPP, data_IINST)
+    # # inserting values
+    # log.debug("Inserting stream record")
+    # linky.insert_stream(config, db, cr, data_BASE, data_PAPP, data_IINST)
 
     log.debug(f"Cycle ends, sleeping for {period} seconds")
     time.sleep(period)
