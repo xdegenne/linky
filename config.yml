@@ -6,3 +6,5 @@ database:
 device: /dev/ttyS0
 use_utc: True
 period: 30
+# DEBUG | INFO | WARNING | ERROR | CRITICAL
+logLevel: INFO

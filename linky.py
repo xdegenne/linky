@@ -6,13 +6,15 @@ import serial, MySQLdb, datetime, sys, logging, logging.handlers
 # 3rd party
 import yaml
 
-
 def init_log_system():
     """
     Initializes log system
     """
+    logLevelStr = config.get('logLevel', 'WARNING')
+    logLevel = logLevels.get(logLevelStr, logging.WARNING)
     log = logging.getLogger('linky')
-    log.setLevel(logging.DEBUG) # Define minimum severity here
+    log.setLevel(logLevel) 
+    
     handler = logging.handlers.RotatingFileHandler('./logs/linky.log', maxBytes=1000000, backupCount=5) # Log file of 1 MB, 5 previous files kept
     formatter = logging.Formatter('[%(asctime)s][%(module)s][%(levelname)s] %(message)s', '%Y-%m-%d %H:%M:%S %z') # Custom line format and time format to include the module and delimit all of this well
     handler.setFormatter(formatter)
