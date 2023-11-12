@@ -9,6 +9,13 @@ import serial, datetime, sys, logging, logging.handlers
 # 3rd party
 import yaml
 
+logLevels = {   'DEBUG': logging.DEBUG, 
+                'INFO': logging.INFO,
+                'WARNING': logging.WARNING,
+                'ERROR': logging.ERROR,
+                'CRITICAL': logging.CRITICAL,
+            }
+
 def init_log_system(config):
     """
     Initializes log system
