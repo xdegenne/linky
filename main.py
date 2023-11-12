@@ -93,6 +93,19 @@ while True:
     # # inserting values
     # log.debug("Inserting stream record")
     # linky.insert_stream(config, db, cr, data_BASE, data_PAPP, data_IINST)
+    value = [
+       {
+           "measurement": "linkyEvents",
+           "time": datetime.datetime.now(datetime.timezone.utc).strftime('%Y-%m-%d %H:%M:%S'),
+           "fields": {
+               "BASE": data_BASE,
+               "PAPP": data_PAPP,
+               "IINST": data_IINST
+           }
+       }
+    ]
+    client.write_points(value)
+
 
     log.debug(f"Cycle ends, sleeping for {period} seconds")
     time.sleep(period)
