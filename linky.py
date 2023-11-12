@@ -25,10 +25,13 @@ def init_log_system(config):
     log = logging.getLogger('linky')
     log.setLevel(logLevel) 
     
-    handler = logging.handlers.RotatingFileHandler('./logs/linky.log', maxBytes=1000000, backupCount=5) # Log file of 1 MB, 5 previous files kept
+    handler = logging.StreamHandler()
+    handler.setLevel(logLevel)
     formatter = logging.Formatter('[%(asctime)s][%(module)s][%(levelname)s] %(message)s', '%Y-%m-%d %H:%M:%S %z') # Custom line format and time format to include the module and delimit all of this well
-    handler.setFormatter(formatter)
+    
     log.addHandler(handler)
+    #log.addHandler()
+    log.info("Log initialized")
     return log
 
 
