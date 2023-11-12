@@ -11,11 +11,12 @@ import linky
 # Setup                         #
 # ----------------------------- #
 
-log = logging.getLogger('linky')
+# log = logging.getLogger('linky')
 
-log.debug('Loading config...')
+# log.debug('Loading config...')
 config = linky.load_config()
-log.debug(f'Config loaded! Values: {config}')
+# log.debug(f'Config loaded! Values: {config}')
+log = utils.init_log_system(config)
 period = int(config.get('period', 60))
 
 terminal = linky.setup_serial(config['device'])

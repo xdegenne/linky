@@ -9,7 +9,7 @@ import serial, datetime, sys, logging, logging.handlers
 # 3rd party
 import yaml
 
-def init_log_system():
+def init_log_system(config):
     """
     Initializes log system
     """
