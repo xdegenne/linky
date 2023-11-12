@@ -1,7 +1,7 @@
 [Unit]
 Description=Python service fetching Linky and putting data into MySQL
 After=network-online.target
-After=mariadb.service
+After=influxdb.service
 
 [Service]
 Type=simple
