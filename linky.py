@@ -183,4 +183,4 @@ def setup_serial(dev):
 
 
 # Initializing log system
-log = init_log_system()
+#log = init_log_system()
