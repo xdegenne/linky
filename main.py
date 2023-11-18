@@ -7,6 +7,10 @@ from influxdb import InfluxDBClient
 # Self libraries
 import linky
 
+#Importe la bibliothèque pour contrôler les GPIOs
+import RPi.GPIO as GPIO
+GPIO.setmode(GPIO.BCM)
+GPIO.setwarnings(False)
 
 # ----------------------------- #
 # Setup                         #
@@ -19,6 +23,10 @@ config = linky.load_config()
 # log.debug(f'Config loaded! Values: {config}')
 log = linky.init_log_system(config)
 period = int(config.get('period', 60))
+
+led = int(config.get('led_gpio_pin', 26))
+GPIO.setup(led, GPIO.OUT)
+GPIO.output(led, GPIO.LOW)
 
 terminal = linky.setup_serial(config['device'])
 
@@ -105,6 +113,10 @@ while True:
        }
     ]
     client.write_points(value)
+    
+    GPIO.output(led, GPIO.HIGH)
+    time.sleep(0.100)
+    GPIO.output(led, GPIO.LOW)
 
 
     log.debug(f"Cycle ends, sleeping for {period} seconds")
