@@ -34,6 +34,8 @@ terminal = linky.setup_serial(config['device'])
 # Trying to connect to db server and creating schema if not exists
 #linky.test_db_connection(config['database']['server'], config['database']['user'], config['database']['password'], config['database']['name'])
 
+linky.test_db_connection(config['influx_db']['server'], config['influx_db']['port'], log)
+
 client = InfluxDBClient(host=config['influx_db']['server'], port=config['influx_db']['port'])
 client.switch_database(config['influx_db']['name'])
 

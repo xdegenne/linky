@@ -3,7 +3,7 @@
 # stdlib
 # import serial, MySQLdb, datetime, sys, logging, logging.handlers
 import serial, datetime, sys, logging, logging.handlers
-
+import time, socket
 
 
 # 3rd party
@@ -34,6 +34,19 @@ def init_log_system(config):
     log.info("Log initialized")
     return log
 
+def test_db_connection(address, port, log):
+    s = socket.socket()
+    while True:
+        try:
+            log.info(f"Testing connection to {address}:{port}")
+            s.connect((address, port)) 
+            log.info(f"Connection to {address}:{port} successfull !")
+            break
+        except Exception as e: 
+            log.warn(f"Not able to connect to {address}:{port}. Retrying ...")
+            time.sleep(10)
+        finally:
+            s.close()
 
 def load_config():
     """
