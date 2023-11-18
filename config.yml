@@ -12,3 +12,4 @@ use_utc: True
 period: 30
 # DEBUG | INFO | WARNING | ERROR | CRITICAL
 logLevel: DEBUG
+led_gpio_pin: 26
