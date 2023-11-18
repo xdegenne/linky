@@ -17,6 +17,7 @@ GPIO.setwarnings(False)
 # ----------------------------- #
 
 # log = logging.getLogger('linky')
+blink_duration = 0.05
 
 # log.debug('Loading config...')
 config = linky.load_config()
@@ -115,9 +116,9 @@ while True:
     client.write_points(value)
     
     GPIO.output(led, GPIO.HIGH)
-    time.sleep(0.05)
+    time.sleep(blink_duration)
     GPIO.output(led, GPIO.LOW)
 
-
-    log.debug(f"Cycle ends, sleeping for {period} seconds")
-    time.sleep(period - 0.05)
+    sleep_time = period - blink_duration
+    log.debug(f"Cycle ends, sleeping for {sleep_time} seconds")
+    time.sleep(sleep_time)
