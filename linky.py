@@ -35,15 +35,15 @@ def init_log_system(config):
     return log
 
 def test_db_connection(address, port, log):
-    s = socket.socket()
     while True:
         try:
             log.info(f"Testing connection to {address}:{port}")
+            s = socket.socket()
             s.connect((address, port)) 
             log.info(f"Connection to {address}:{port} successfull !")
             break
         except Exception as e: 
-            log.warn(f"Not able to connect to {address}:{port}. Retrying ...")
+            log.warn(f"Not able to connect to {address}:{port}. Retrying in 10s ...")
             time.sleep(10)
         finally:
             s.close()
