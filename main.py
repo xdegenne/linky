@@ -22,7 +22,7 @@ GPIO.setwarnings(False)
 config = linky.load_config()
 # log.debug(f'Config loaded! Values: {config}')
 log = linky.init_log_system(config)
-period = int(config.get('period', 60))
+period = float(config.get('period', 60))
 
 led = int(config.get('led_gpio_pin', 26))
 GPIO.setup(led, GPIO.OUT)
@@ -115,9 +115,9 @@ while True:
     client.write_points(value)
     
     GPIO.output(led, GPIO.HIGH)
-    time.sleep(0.100)
+    time.sleep(0.05)
     GPIO.output(led, GPIO.LOW)
 
 
     log.debug(f"Cycle ends, sleeping for {period} seconds")
-    time.sleep(period)
+    time.sleep(period - 0.05)
