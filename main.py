@@ -71,27 +71,31 @@ while True:
     # reading continously output until we have data that interests us
     while True:
         GPIO.output(red_led, GPIO.HIGH)
-        line = terminal.readline().decode('ascii')
-        log.debug(f"Current line: <{line}>")
+        try:
+            line = terminal.readline().decode('ascii')
+            log.debug(f"Current line: <{line}>")
 
-        if line.startswith('BASE'):
-            data_BASE = int(line.split(' ')[1])
-            log.debug(f"Parsed BASE: {data_BASE}")
-        if line.startswith('PAPP'):
-            data_PAPP = int(line.split(' ')[1])
-            log.debug(f"Parsed PAPP: {data_PAPP}")
-        if line.startswith('IINST'):
-            data_IINST = int(line.split(' ')[1])
-            log.debug(f"Parsed IINST: {data_IINST}")
+            if line.startswith('BASE'):
+                data_BASE = int(line.split(' ')[1])
+                log.debug(f"Parsed BASE: {data_BASE}")
+            if line.startswith('PAPP'):
+                data_PAPP = int(line.split(' ')[1])
+                log.debug(f"Parsed PAPP: {data_PAPP}")
+            if line.startswith('IINST'):
+                data_IINST = int(line.split(' ')[1])
+                log.debug(f"Parsed IINST: {data_IINST}")
 
-        log.debug(f"BASE={data_BASE}, PAPP={data_PAPP}. IINST={data_IINST} => {data_BASE and data_PAPP and data_IINST}")
-        # We have BASE and PAPP, we can now close the connection
-        if data_BASE and data_PAPP != None and data_IINST != None:
-            GPIO.output(red_led, GPIO.LOW)
-            log.debug(f"Output parsed: BASE={data_BASE}, PAPP={data_PAPP}. IINST={data_IINST}. Closing terminal.")
-            terminal.close()
-            break
-    
+            log.debug(f"BASE={data_BASE}, PAPP={data_PAPP}. IINST={data_IINST} => {data_BASE and data_PAPP and data_IINST}")
+            # We have BASE and PAPP, we can now close the connection
+            if data_BASE and data_PAPP != None and data_IINST != None:
+                GPIO.output(red_led, GPIO.LOW)
+                log.debug(f"Output parsed: BASE={data_BASE}, PAPP={data_PAPP}. IINST={data_IINST}. Closing terminal.")
+                terminal.close()
+                break
+            
+        except Exception as e: 
+            log.error(f"Exception occured while decoding data. Skip")
+
     # Connecting to database
     # log.debug("Connecting to database")
     # db, cr = linky.open_db(config['database']['server'], config['database']['user'], config['database']['password'], config['database']['name'])
@@ -109,22 +113,23 @@ while True:
     # # inserting values
     # log.debug("Inserting stream record")
     # linky.insert_stream(config, db, cr, data_BASE, data_PAPP, data_IINST)
-    value = [
-       {
-           "measurement": "linkyEvents",
-           "time": datetime.datetime.now(datetime.timezone.utc).strftime('%Y-%m-%d %H:%M:%S'),
-           "fields": {
-               "BASE": data_BASE,
-               "PAPP": data_PAPP,
-               "IINST": data_IINST
-           }
-       }
-    ]
-    client.write_points(value)
-    
-    GPIO.output(led, GPIO.HIGH)
-    time.sleep(blink_duration)
-    GPIO.output(led, GPIO.LOW)
+    if data_BASE and data_PAPP != None and data_IINST != None:
+        value = [
+        {
+            "measurement": "linkyEvents",
+            "time": datetime.datetime.now(datetime.timezone.utc).strftime('%Y-%m-%d %H:%M:%S'),
+            "fields": {
+                "BASE": data_BASE,
+                "PAPP": data_PAPP,
+                "IINST": data_IINST
+            }
+        }
+        ]
+        client.write_points(value)
+        
+        GPIO.output(led, GPIO.HIGH)
+        time.sleep(blink_duration)
+        GPIO.output(led, GPIO.LOW)
 
     sleep_time = period - blink_duration
     log.debug(f"Cycle ends, sleeping for {sleep_time} seconds")
