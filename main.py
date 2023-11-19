@@ -26,8 +26,11 @@ log = linky.init_log_system(config)
 period = float(config.get('period', 60))
 
 led = int(config.get('led_gpio_pin', 26))
+red_led = int(config.get('red_gpio_pin', 19))
 GPIO.setup(led, GPIO.OUT)
+GPIO.setup(red_led, GPIO.OUT)
 GPIO.output(led, GPIO.LOW)
+GPIO.output(red_led, GPIO.LOW)
 
 terminal = linky.setup_serial(config['device'])
 
@@ -67,6 +70,7 @@ while True:
 
     # reading continously output until we have data that interests us
     while True:
+        GPIO.output(red_led, GPIO.HIGH)
         line = terminal.readline().decode('ascii')
         log.debug(f"Current line: <{line}>")
 
@@ -83,6 +87,7 @@ while True:
         log.debug(f"BASE={data_BASE}, PAPP={data_PAPP}. IINST={data_IINST} => {data_BASE and data_PAPP and data_IINST}")
         # We have BASE and PAPP, we can now close the connection
         if data_BASE and data_PAPP != None and data_IINST != None:
+            GPIO.output(red_led, GPIO.LOW)
             log.debug(f"Output parsed: BASE={data_BASE}, PAPP={data_PAPP}. IINST={data_IINST}. Closing terminal.")
             terminal.close()
             break
