@@ -27,10 +27,13 @@ period = float(config.get('period', 60))
 
 led = int(config.get('led_gpio_pin', 26))
 red_led = int(config.get('red_gpio_pin', 19))
-GPIO.setup(led, GPIO.OUT)
-GPIO.setup(red_led, GPIO.OUT)
-GPIO.output(led, GPIO.LOW)
-GPIO.output(red_led, GPIO.LOW)
+led_disabled = bool(config.get('led_disabled', True))
+
+if not led_disabled:
+    GPIO.setup(led, GPIO.OUT)
+    GPIO.setup(red_led, GPIO.OUT)
+    GPIO.output(led, GPIO.LOW)
+    GPIO.output(red_led, GPIO.LOW)
 
 terminal = linky.setup_serial(config['device'])
 
@@ -70,7 +73,8 @@ while True:
 
     # reading continously output until we have data that interests us
     while True:
-        GPIO.output(red_led, GPIO.HIGH)
+        if not led_disabled:
+            GPIO.output(red_led, GPIO.HIGH)
         try:
             line = terminal.readline().decode('ascii')
             log.debug(f"Current line: <{line}>")
@@ -88,7 +92,8 @@ while True:
             log.debug(f"BASE={data_BASE}, PAPP={data_PAPP}. IINST={data_IINST} => {data_BASE and data_PAPP and data_IINST}")
             # We have BASE and PAPP, we can now close the connection
             if data_BASE and data_PAPP != None and data_IINST != None:
-                GPIO.output(red_led, GPIO.LOW)
+                if not led_disabled:
+                    GPIO.output(red_led, GPIO.LOW)
                 log.debug(f"Output parsed: BASE={data_BASE}, PAPP={data_PAPP}. IINST={data_IINST}. Closing terminal.")
                 terminal.close()
                 break
@@ -117,7 +122,6 @@ while True:
         value = [
         {
             "measurement": "linkyEvents",
-            "time": datetime.datetime.now(datetime.timezone.utc).strftime('%Y-%m-%d %H:%M:%S'),
             "fields": {
                 "BASE": data_BASE,
                 "PAPP": data_PAPP,
@@ -126,10 +130,11 @@ while True:
         }
         ]
         client.write_points(value)
-        
-        GPIO.output(led, GPIO.HIGH)
+        if not led_disabled:
+            GPIO.output(led, GPIO.HIGH)
         time.sleep(blink_duration)
-        GPIO.output(led, GPIO.LOW)
+        if not led_disabled:
+            GPIO.output(led, GPIO.LOW)
 
     sleep_time = period - blink_duration
     log.debug(f"Cycle ends, sleeping for {sleep_time} seconds")
